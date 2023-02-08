@@ -95,7 +95,6 @@
             <th>Appointment date</th>
             <th>Doctor</th>
             <th>Staff</th>
-            <th>Delete</th>
           </tr>
         </thead>
         <!--Table head-->
@@ -110,6 +109,8 @@
   </body>
 
   <script>
+
+    
     function t_record(obj) {
       let record = `<tr class="table">
                       <th scope="row">${obj.id}</th>
@@ -118,7 +119,6 @@
                       <td>${obj.app_date}</td>
                       <td>${obj.doc_id}</td>
                       <td>${obj.staff_id}</td>
-                      <td><button class="btn btn-danger">Delete</button></td>
                   </tr>`
       return record
     }

@@ -38,39 +38,83 @@
             LOGIN
           </h3>
           <br />
-          <form>
+          <form id="loginForm">
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <input
-                type="email"
-                id="form1Example13"
-                class="form-control form-control-lg"
-              />
               <label class="form-label" for="form1Example13"
                 >Email address</label
               >
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control form-control-lg"
+              />
             </div>
 
             <!-- Password input -->
             <div class="form-outline mb-4">
+              <label class="form-label" for="form1Example23">Password</label>
               <input
                 type="password"
-                id="form1Example23"
+                id="password"
+                name="password"
                 class="form-control form-control-lg"
               />
-              <label class="form-label" for="form1Example23">Password</label>
             </div>
 
-            <div class="d-flex justify-content-around align-items-center mb-4">
-            </div>
+            <p>
+              If you don't have an account, <a href="/register.html">Sign Up</a>
+            </p>
+
+            <div
+              class="d-flex justify-content-around align-items-center mb-4"
+            ></div>
 
             <!-- Submit button -->
             <button type="submit" class="btn btn-primary btn-lg btn-block">
-              Sign in
+              Log in
             </button>
+
+            <p
+              style="color: red; font-size: 15px; margin-top: 10px"
+              id="error"
+            ></p>
           </form>
         </div>
       </div>
     </div>
   </body>
+
+  <script>
+    document
+      .getElementById('loginForm')
+      .addEventListener('submit', function (event) {
+        event.preventDefault()
+        const formData = new FormData(event.target)
+        const formProps = Object.fromEntries(formData)
+        var count = 0
+        var errors = ''
+        if (
+          /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(formProps.email)
+        ) {
+          count++
+        } else {
+          errors = errors + 'Not an email address. '
+        }
+        if (/^\d{10}$/.test(formProps.mobile)) {
+          count++
+        } else {
+          errors = errors + 'Not a valid phone number. '
+        }
+
+        if (count < 2) {
+          document.getElementById('error').innerHTML = errors
+        } else {
+          count = 0
+          document.getElementById('error').innerHTML = ''
+          console.log(formProps)
+        }
+      })
+  </script>
 </html>
