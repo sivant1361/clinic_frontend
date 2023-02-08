@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div style="padding: 0.75em 2em">
+      <h3 style="color: #000; font-weight: bold">MEDLIFE</h3>
+    </div>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark"
+      style="background: #23395d; border-radius: 0"
+    >
+      <!-- <a class="navbar-brand" href="#" style="color: #fff; font-weight: bold"
+        >MEDLIFE</a
+      > -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <!-- <a class="nav-item nav-link" href="#"
+            >Home <span class="sr-only">(current)</span></a
+          > -->
+          <a
+            class="nav-item nav-link"
+            style="color: #e0f7fa; padding-right: 1em"
+            href="/patient_profile.html"
+            >PROFILE</a
+          >
+          <a
+            class="nav-item nav-link"
+            style="color: gold; padding-right: 1em"
+            href="/patient_appointments.html"
+            >APPOINTMENTS</a
+          >
+        </div>
+      </div>
+    </nav>
+    <section style="padding: 1em 3em">
+      <!--Table-->
+      <table
+        class="table table-striped w-auto table-hover"
+        style="background: whitesmoke"
+      >
+        <!--Table head-->
+        <thead style="color: white; background: #23395d">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Appointment ID</th>
+            <th>Appointment date</th>
+            <th>Doctor</th>
+            <th>Staff</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <!--Table head-->
+
+        <!--Table body-->
+        <tbody id="tb-content"></tbody>
+
+        <!--Table body-->
+      </table>
+      <!--Table-->
+    </section>
+  </body>
+
+  <script>
+    function t_record(obj) {
+      let record = `<tr class="table">
+                      <th scope="row">${obj.id}</th>
+                      <td>${obj.name}</td>
+                      <td>${obj.app_id}</td>
+                      <td>${obj.app_date}</td>
+                      <td>${obj.doc_id}</td>
+                      <td>${obj.staff_id}</td>
+                      <td><button class="btn btn-danger">Delete</button></td>
+                  </tr>`
+      return record
+    }
+
+    let history = [
+      {
+        id: 1,
+        name: 'king',
+        app_id: 345,
+        app_date: '08-02-2023',
+        doc_id: 678,
+        staff_id: 278
+      },
+      {
+        id: 2,
+        name: 'king',
+        app_id: 345,
+        app_date: '08-02-2023',
+        doc_id: 678,
+        staff_id: 278
+      },
+      {
+        id: 3,
+        name: 'king',
+        app_id: 345,
+        app_date: '08-02-2023',
+        doc_id: 678,
+        staff_id: 278
+      }
+    ]
+
+    var res = ''
+
+    for (let i of history) {
+      res = res + t_record(i)
+      // console.log(i)
+      // console.log(t_record(i))
+    }
+
+    document.getElementById('tb-content').innerHTML = res
+  </script>
+
+  <style>
+    body {
+      color: #1a202c;
+      /* text-align: left;
+      background-color: #e2e8f0; */
+    }
+    .main-body {
+      padding: 15px;
+    }
+    .card {
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      word-wrap: break-word;
+      background-color: #fff;
+      background-clip: border-box;
+      border: 0 solid rgba(0, 0, 0, 0.125);
+      border-radius: 0.25rem;
+    }
+
+    .card-body {
+      flex: 1 1 auto;
+      min-height: 1px;
+      padding: 1rem;
+    }
+
+    .gutters-sm {
+      margin-right: -8px;
+      margin-left: -8px;
+    }
+
+    .gutters-sm > .col,
+    .gutters-sm > [class*='col-'] {
+      padding-right: 8px;
+      padding-left: 8px;
+    }
+    .mb-3,
+    .my-3 {
+      margin-bottom: 1rem !important;
+    }
+
+    .bg-gray-300 {
+      background-color: #e2e8f0;
+    }
+    .h-100 {
+      height: 100% !important;
+    }
+    .shadow-none {
+      box-shadow: none !important;
+    }
+    .table {
+      margin: 0 auto;
+      width: 100%;
+    }
+  </style>
+</html>

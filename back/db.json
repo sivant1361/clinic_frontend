@@ -1,0 +1,66 @@
+{
+    "users": [
+        {
+            "email": "john@gmail.com",
+            "name": "John",
+            "password": "john",
+            "role": "doctor"
+        },
+        {
+            "email": "mike@gmail.com",
+            "name": "Mike",
+            "password": "mike",
+            "role": "doctor"
+        },
+        {
+            "email": "jessica@gmail.com",
+            "name": "Jessica",
+            "password": "jessica",
+            "role": "staff"
+        },
+        {
+            "email": "jack@gmail.com",
+            "name": "Jack",
+            "password": "jack",
+            "role": "user"
+        },
+        {
+            "email": "lisa@gmail.com",
+            "name": "Lisa",
+            "password": "lisa",
+            "role": "user"
+        },
+        {
+            "email": "reynold@gmail.com",
+            "name": "Reynold",
+            "password": "reynold",
+            "role": "user"
+        }
+    ],
+    "records": [
+        {
+            "patient": "Jack",
+            "doctor": "John",
+            "staff": "Jessica",
+            "notes": "Good",
+            "status": "Next Session",
+            "prescription": "Paracetemol"
+        },
+        {
+            "patient": "Reynold",
+            "doctor": "John",
+            "staff": "Jessica",
+            "notes": "Good",
+            "status": "Next Session",
+            "prescription": "Paracetemol"
+        },
+        {
+            "patient": "Lisa",
+            "doctor": "Mike",
+            "staff": "Jessica",
+            "notes": "Good",
+            "status": "Next Session",
+            "prescription": "Paracetemol"
+        }
+    ]
+}
