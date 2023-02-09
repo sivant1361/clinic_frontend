@@ -75,6 +75,12 @@
             href="/staff_doc.html"
             >DOCTORS</a
           >
+          <a
+            class="nav-item nav-link"
+            style="color: #e0f7fa; padding-right: 1em"
+            id="signout"
+            >SIGN OUT</a
+          >
         </div>
       </div>
     </nav>
@@ -91,11 +97,11 @@
         <thead style="color: white; background: #23395d">
           <tr>
             <th>ID</th>
-            <th>Name</th>
+            <th>Patient</th>
             <th>Appointment ID</th>
             <th>Appointment date</th>
+            <th>Appointment time</th>
             <th>Doctor</th>
-            <th>Staff</th>
             <th>Accept</th>
             <th>Decline</th>
           </tr>
@@ -109,130 +115,192 @@
       </table>
       <!--Table-->
     </section>
-  </body>
 
-  <script>
-    var accept = true
+    <script type="module">
+      import {
+        getRole,
+        respondAppointmentAPI,
+        getDoctorsAPI,
+        getAppointmentsAPI,
+        clearData
+      } from './api.js'
 
-    function AcceptHandler(ind) {
-      console.log('Accepted : ', history[ind])
-    }
+      if (getRole() != 'staff') {
+        window.location.href = '/404.html'
+      }
 
-    function RejectHandler(ind) {
-      console.log('Rejected : ', history[ind])
-    }
+      document
+        .getElementById('signout')
+        .addEventListener('click', function (event) {
+          clearData()
+        })
 
-    function t_record(obj, ind) {
-      let record = `<tr class="table">
-                      <th scope="row">${obj.id}</th>
-                      <td>${obj.name}</td>
-                      <td>${obj.app_id}</td>
-                      <td>${obj.app_date}</td>
-                      <td>${obj.doc_id}</td>
-                      <td>${obj.staff_id}</td>
+      var accept = true
+
+      let appointments = await getAppointmentsAPI()
+      // console.log(doctors)
+
+      let pendingAppointments = appointments.appointments.filter(
+        app => app.status == 'pending'
+      )
+      // console.log(appointments.appointments, appointments.appointments.length);
+
+      async function AcceptHandler(ind) {
+        var doc = document.getElementById(`doctor${ind + 1}`).value
+        var atime = document.getElementById(`time${ind + 1}`).value
+        var rec = pendingAppointments[ind]
+        try {
+          let res = await respondAppointmentAPI(rec.id, 'accepted', doc, atime)
+          console.log(res)
+          if (res.success) {
+            pendingAppointments.splice(ind, 1)
+            displayAppointments(pendingAppointments)
+          }
+        } catch (e) {
+          console.log(err)
+        }
+        // console.log('Accepted : ', pendingAppointments[ind], doc)
+      }
+
+      async function RejectHandler(ind) {
+        var doc = document.getElementById(`doctor${ind + 1}`).value
+        var atime = document.getElementById(`time${ind + 1}`).value
+        var rec = pendingAppointments[ind]
+        try {
+          let res = await respondAppointmentAPI(rec.id, 'rejected', doc, atime)
+          console.log(res)
+          if (res.success) {
+            pendingAppointments.splice(ind, 1)
+            displayAppointments(pendingAppointments)
+          }
+        } catch (e) {
+          console.log(err)
+        }
+        // console.log('Rejected : ', pendingAppointments[ind], doc)
+      }
+
+      window.AcceptHandler = AcceptHandler
+      window.RejectHandler = RejectHandler
+
+      async function getOptions() {
+        let doctors = await getDoctorsAPI()
+        // console.log(doctors)
+        doctors = doctors.doctors
+        let res = ''
+        for (let i = 0; i < doctors.length; i++) {
+          res += `<option value="${doctors[i].email}">${doctors[i].name}</option>\n`
+          // console.log(res)
+        }
+
+        return res
+      }
+      async function getOptionsTimes() {
+        let times = ['10:00:00', '12:00:00', '14:00:00', '16:00:00']
+        let res = ''
+        for (let i = 0; i < times.length; i++) {
+          res += `<option value="${times[i]}">${times[i]}</option>\n`
+          // console.log(res)
+        }
+
+        return res
+      }
+
+      async function t_record(obj, ind) {
+        let record = `<tr class="table">
+                      <th scope="row">${ind + 1}</th>
+                      <td>${obj.patient}</td>
+                      <td>${obj.id}</td>
+                      <td>${obj.date}</td>
+                      <td>
+                        <select name="doctors" id="doctor${ind + 1}">
+                          ${await getOptions()}
+                        </select>
+                      </td>
+                      <td>
+                        <select name="apptime" id="time${ind + 1}">
+                          ${await getOptionsTimes()}
+                        </select>
+                      </td>
                       <td><button class="btn btn-success" onclick="AcceptHandler(${ind})">Accept</button></td>
                       <td><button class="btn btn-danger" onclick="RejectHandler(${ind})">Decline</button></td>
                   </tr>`
-      return record
-    }
-
-    let history = [
-      {
-        id: 1,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 2,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 3,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
+        return record
       }
-    ]
 
-    var res = ''
+      async function displayAppointments(pendingAppointments) {
+        var res = ''
+        // console.log(pendingAppointments)
+        for (let i = 0; i < pendingAppointments.length; i++) {
+          res = res + (await t_record(pendingAppointments[i], i))
+          // console.log(i)
+          // console.log(t_record(i))
+        }
+        document.getElementById('tb-content').innerHTML = res
+      }
 
-    for (let i in history) {
-      res = res + t_record(history[i], i)
-      // console.log(i)
-      // console.log(t_record(i))
-    }
+      displayAppointments(pendingAppointments)
+    </script>
 
-    document.getElementById('tb-content').innerHTML = res
-  </script>
-
-  <style>
-    body {
-      color: #1a202c;
-      /* text-align: left;
+    <style>
+      body {
+        color: #1a202c;
+        /* text-align: left;
       background-color: #e2e8f0; */
-    }
-    .main-body {
-      padding: 15px;
-    }
-    .card {
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
-        0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    }
+      }
+      .main-body {
+        padding: 15px;
+      }
+      .card {
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      }
 
-    .card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      word-wrap: break-word;
-      background-color: #fff;
-      background-clip: border-box;
-      border: 0 solid rgba(0, 0, 0, 0.125);
-      border-radius: 0.25rem;
-    }
+      .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0, 0, 0, 0.125);
+        border-radius: 0.25rem;
+      }
 
-    .card-body {
-      flex: 1 1 auto;
-      min-height: 1px;
-      padding: 1rem;
-    }
+      .card-body {
+        flex: 1 1 auto;
+        min-height: 1px;
+        padding: 1rem;
+      }
 
-    .gutters-sm {
-      margin-right: -8px;
-      margin-left: -8px;
-    }
+      .gutters-sm {
+        margin-right: -8px;
+        margin-left: -8px;
+      }
 
-    .gutters-sm > .col,
-    .gutters-sm > [class*='col-'] {
-      padding-right: 8px;
-      padding-left: 8px;
-    }
-    .mb-3,
-    .my-3 {
-      margin-bottom: 1rem !important;
-    }
+      .gutters-sm > .col,
+      .gutters-sm > [class*='col-'] {
+        padding-right: 8px;
+        padding-left: 8px;
+      }
+      .mb-3,
+      .my-3 {
+        margin-bottom: 1rem !important;
+      }
 
-    .bg-gray-300 {
-      background-color: #e2e8f0;
-    }
-    .h-100 {
-      height: 100% !important;
-    }
-    .shadow-none {
-      box-shadow: none !important;
-    }
-    .table {
-      margin: 0 auto;
-      width: 100%;
-    }
-  </style>
+      .bg-gray-300 {
+        background-color: #e2e8f0;
+      }
+      .h-100 {
+        height: 100% !important;
+      }
+      .shadow-none {
+        box-shadow: none !important;
+      }
+      .table {
+        margin: 0 auto;
+        width: 100%;
+      }
+    </style>
+  </body>
 </html>

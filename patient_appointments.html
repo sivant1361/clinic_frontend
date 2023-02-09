@@ -57,11 +57,16 @@
             href="/patient_appointments.html"
             >APPOINTMENTS</a
           >
+          <a
+            class="nav-item nav-link"
+            style="color: #e0f7fa; padding-right: 1em"
+            id="signout"
+            >SIGN OUT</a
+          >
         </div>
       </div>
     </nav>
 
-    
     <section style="padding: 1em 3em">
       <div style="margin-bottom: 1em">
         <div
@@ -91,43 +96,15 @@
                     data-error="wrong"
                     data-success="right"
                     for="defaultForm-name"
-                    >Name</label
+                    >Date</label
                   >
                   <i class="fas fa-envelope prefix grey-text"></i>
                   <input
-                    type="name"
-                    name="name"
-                    id="name"
+                    type="date"
+                    name="date"
+                    id="date"
                     class="form-control validate"
                   />
-                </div>
-
-                <div class="md-form mb-4">
-                  <i class="fas fa-lock prefix grey-text"></i>
-                  <label
-                    data-error="wrong"
-                    data-success="right"
-                    for="defaultForm-phone"
-                    >Phone Number</label
-                  >
-                  <input
-                    type="mobile"
-                    id="mobile"
-                    name="mobile"
-                    class="form-control validate"
-                  />
-                </div>
-
-                <div class="md-form mb-4">
-                  <i class="fas fa-lock prefix grey-text"></i>
-                  <label
-                    data-error="wrong"
-                    data-success="right"
-                    for="defaultForm-address"
-                    >Address</label
-                  ><br />
-                  <textarea id="address" name="address" style="width: 100%" ;>
-                  </textarea>
                 </div>
 
                 <div class="md-form mb-4">
@@ -138,7 +115,12 @@
                     for="defaultForm-reason"
                     >Reason of visit</label
                   ><br />
-                  <textarea id="reason" name="reason" style="width: 100%" ;>
+                  <textarea
+                    id="reason"
+                    name="reason"
+                    style="width: 100%"
+                    value=""
+                  >
                   </textarea>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
@@ -168,13 +150,12 @@
         <!--Table head-->
         <thead style="color: white; background: #23395d">
           <tr>
-            <th>ID</th>
-            <th>Name</th>
             <th>Appointment ID</th>
+            <th>Email</th>
             <th>Appointment date</th>
             <th>Doctor</th>
-            <th>Staff</th>
-            <th>Delete</th>
+            <th>Reason</th>
+            <th>Status</th>
           </tr>
         </thead>
         <!--Table head-->
@@ -188,30 +169,34 @@
     </section>
   </body>
 
-  <script>
+  <script type="module">
+    import {
+      getRole,
+      createAppointmentAPI,
+      clearData,
+      getProfileAPI
+    } from './api.js'
+    if (getRole() != 'user') {
+      window.location.href = '/404.html'
+    }
+    document
+      .getElementById('signout')
+      .addEventListener('click', function (event) {
+        clearData()
+      })
 
-document
+    document
       .getElementById('applicationForm')
-      .addEventListener('submit', function (event) {
+      .addEventListener('submit', async function (event) {
         event.preventDefault()
         const formData = new FormData(event.target)
         const formProps = Object.fromEntries(formData)
         var count = 0
         var errors = ''
-        if (/^\d{10}$/.test(formProps.mobile)) {
+        if (formProps.date) {
           count++
         } else {
-          errors = errors + 'Not a valid  phone number. '
-        }
-        if (formProps.name.length == 0) {
-          errors = errors + 'Length of name should not be zero. '
-        } else {
-          count++
-        }
-        if (formProps.address.trim().length == 0) {
-          errors = errors + 'Length of address should not be zero. '
-        } else {
-          count++
+          errors = errors + 'Enter the Date. '
         }
         if (formProps.reason.trim().length == 0) {
           errors = errors + 'Length of reason should not be zero. '
@@ -219,64 +204,60 @@ document
           count++
         }
 
-        if (count < 4) {
+        if (count < 2) {
           console.log(formProps)
           document.getElementById('error').innerHTML = errors
         } else {
           count = 0
           document.getElementById('error').innerHTML = ''
-          console.log(formProps)
+          console.log('starting to make a request')
+          try {
+            var res = await createAppointmentAPI(
+              formProps.date.toLocaleString(),
+              formProps.reason
+            )
+            console.log('request result arrived', res)
+          } catch (err) {
+            console.log(err)
+          }
+          if (res?.success) {
+            alert('appointment added')
+            $('#modalLoginForm').modal('hide')
+          } else {
+            document.getElementById('error').innerHTML = res?.success
+              ? ''
+              : res?.error
+          }
         }
       })
     function t_record(obj) {
       let record = `<tr class="table">
                       <th scope="row">${obj.id}</th>
-                      <td>${obj.name}</td>
-                      <td>${obj.app_id}</td>
-                      <td>${obj.app_date}</td>
-                      <td>${obj.doc_id}</td>
-                      <td>${obj.staff_id}</td>
-                      <td><button class="btn btn-danger">Delete</button></td>
+                      <td>${obj.patient ? obj.patient : ''}</td>
+                      <td>${obj.date ? obj.date : ''}</td>
+                      <td>${obj.doc_id ? obj.doc_id : ''}</td>
+                      <td>${obj.notes ? obj.notes : ''}</td>
+                      <td>${obj.status ? obj.status : ''}</td>
                   </tr>`
       return record
     }
 
-    let history = [
-      {
-        id: 1,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 2,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 3,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
+    const getHistory = async () => {
+      let res = await getProfileAPI()
+      var history = []
+      console.log(res)
+      if (res.success) {
+        history = res.profile.records
       }
-    ]
+      var out = ''
 
-    var res = ''
+      for (let i of history) {
+        out = out + t_record(i)
+      }
 
-    for (let i of history) {
-      res = res + t_record(i)
-      // console.log(i)
-      // console.log(t_record(i))
+      document.getElementById('tb-content').innerHTML = out
     }
-
-    document.getElementById('tb-content').innerHTML = res
+    getHistory()
   </script>
 
   <style>

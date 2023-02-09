@@ -75,6 +75,12 @@
             href="/staff_doc.html"
             >DOCTORS</a
           >
+          <a
+            class="nav-item nav-link"
+            style="color: #e0f7fa; padding-right: 1em"
+            id="signout"
+            >SIGN OUT</a
+          >
         </div>
       </div>
     </nav>
@@ -90,11 +96,10 @@
         <thead style="color: white; background: #23395d">
           <tr>
             <th>ID</th>
+            <th>Email</th>
             <th>Name</th>
-            <th>Appointment ID</th>
-            <th>Appointment date</th>
-            <th>Doctor</th>
-            <th>Staff</th>
+            <th>Joined At</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <!--Table head-->
@@ -108,57 +113,106 @@
     </section>
   </body>
 
-  <script>
+  <script type="module">
+    import {
+      getRole,
+      clearData,
+      getPatientsAPI,
+      removeStaffAPI
+    } from './api.js'
 
-    
-    function t_record(obj) {
+    if (getRole() != 'staff') {
+      window.location.href = '/404.html'
+    }
+
+    document
+      .getElementById('signout')
+      .addEventListener('click', function (event) {
+        clearData()
+      })
+
+    function t_record(obj, ind) {
       let record = `<tr class="table">
                       <th scope="row">${obj.id}</th>
+                      <td>${obj.email}</td>
                       <td>${obj.name}</td>
-                      <td>${obj.app_id}</td>
-                      <td>${obj.app_date}</td>
-                      <td>${obj.doc_id}</td>
-                      <td>${obj.staff_id}</td>
+                      <td>${obj.createdAt.substring(0, 10)}</td>
+                      <td><button class="btn btn-danger" onclick="DeletePatient(${ind})">Delete</button></td>
                   </tr>`
       return record
     }
 
-    let history = [
-      {
-        id: 1,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 2,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 3,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
+    const getPatients = async () => {
+      async function DeletePatient(ind) {
+        console.log('Deleted : ', patients[ind])
+        try {
+          var res = await removeStaffAPI(patients[ind].email)
+          console.log(res)
+          if (res.success) {
+            patients.splice(ind, 1)
+            displayPatients(patients)
+          }
+        } catch (e) {
+          console.log(e)
+        }
       }
-    ]
 
-    var res = ''
+      function displayPatients(patients) {
+        var all = ''
 
-    for (let i of history) {
-      res = res + t_record(i)
-      // console.log(i)
-      // console.log(t_record(i))
+        for (let i in patients) {
+          all = all + t_record(patients[i], i)
+        }
+        document.getElementById('tb-content').innerHTML = all
+      }
+
+      window.DeletePatient = DeletePatient
+
+      let res = await getPatientsAPI()
+      let patients = []
+      if (res.success) {
+        patients = res.patients
+      }
+      displayPatients(patients)
     }
 
-    document.getElementById('tb-content').innerHTML = res
+    // let history = [
+    //   {
+    //     id: 1,
+    //     name: 'king',
+    //     app_id: 345,
+    //     app_date: '08-02-2023',
+    //     doc_id: 678,
+    //     staff_id: 278
+    //   },
+    //   {
+    //     id: 2,
+    //     name: 'king',
+    //     app_id: 345,
+    //     app_date: '08-02-2023',
+    //     doc_id: 678,
+    //     staff_id: 278
+    //   },
+    //   {
+    //     id: 3,
+    //     name: 'king',
+    //     app_id: 345,
+    //     app_date: '08-02-2023',
+    //     doc_id: 678,
+    //     staff_id: 278
+    //   }
+    // ]
+
+    // var res = ''
+
+    // for (let i in history) {
+    //   res = res + t_record(history[i], i)
+    //   // console.log(i)
+    //   // console.log(t_record(i))
+    // }
+
+    // document.getElementById('tb-content').innerHTML = res
+    getPatients()
   </script>
 
   <style>

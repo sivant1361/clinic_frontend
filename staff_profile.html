@@ -18,6 +18,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>Document</title>
   </head>
+
   <body>
     <div style="padding: 0.75em 2em">
       <h3 style="color: #000; font-weight: bold">MEDLIFE</h3>
@@ -75,6 +76,12 @@
             href="/staff_doc.html"
             >DOCTORS</a
           >
+          <a
+            class="nav-item nav-link"
+            style="color: #e0f7fa; padding-right: 1em"
+            id="signout"
+            >SIGN OUT</a
+          >
         </div>
       </div>
     </nav>
@@ -96,41 +103,64 @@
         </div>
         <div class="row">
           <div class="col-sm-6">
-            <h6 class="mb-0">Full Name</h6>
+            <h5>Full Name</h5>
           </div>
-          <div class="col-sm-6 text-secondary">Kenneth Valdez</div>
+          <div class="col-sm-6 text-secondary">
+            <h5 id="name">Kenneth Valdez</h5>
+          </div>
         </div>
         <hr />
         <div class="row">
           <div class="col-sm-6">
-            <h6 class="mb-0">Email</h6>
+            <h5>Email</h5>
           </div>
-          <div class="col-sm-6 text-secondary">fip@jukmuh.al</div>
+          <div class="col-sm-6 text-secondary">
+            <h5 id="email">fip@jukmuh.al</h5>
+          </div>
         </div>
         <hr />
         <div class="row">
           <div class="col-sm-6">
-            <h6 class="mb-0">Phone</h6>
+            <h5>Phone</h5>
           </div>
-          <div class="col-sm-6 text-secondary">(239) 816-9029</div>
+          <div class="col-sm-6 text-secondary">
+            <h5 id="mobile">(239) 816-9029</h5>
+          </div>
         </div>
         <hr />
         <div class="row">
           <div class="col-sm-6">
-            <h6 class="mb-0">Mobile</h6>
+            <h5>Address</h5>
           </div>
-          <div class="col-sm-6 text-secondary">(320) 380-4539</div>
-        </div>
-        <hr />
-        <div class="row">
-          <div class="col-sm-6">
-            <h6 class="mb-0">Address</h6>
+          <div class="col-sm-6 text-secondary">
+            <h5 id="address">Bay Area, San Francisco, CA</h5>
           </div>
-          <div class="col-sm-6 text-secondary">Bay Area, San Francisco, CA</div>
         </div>
       </div>
     </div>
   </body>
+  <script type="module">
+    import { getRole, clearData, getProfile } from './api.js'
+
+    if (getRole() != 'staff') {
+      window.location.href = '/404.html'
+    }
+
+    let profile = JSON.parse(getProfile())
+    console.log(profile)
+
+    document
+      .getElementById('signout')
+      .addEventListener('click', function (event) {
+        clearData()
+      })
+    document.getElementById('name').innerHTML = profile.name
+    document.getElementById('email').innerHTML = profile.email
+    document.getElementById('mobile').innerHTML = '9876543210'
+    document.getElementById('address').innerHTML = profile.address
+      ? profile.address
+      : 'Not Mentioned'
+  </script>
 
   <style>
     body {

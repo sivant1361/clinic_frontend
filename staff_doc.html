@@ -75,122 +75,110 @@
             href="/staff_doc.html"
             >DOCTORS</a
           >
+          <a
+            class="nav-item nav-link"
+            style="color: #e0f7fa; padding-right: 1em"
+            id="signout"
+            >SIGN OUT</a
+          >
         </div>
       </div>
     </nav>
 
+    <section style="padding: 1em 3em">
+      <div style="margin-bottom: 1em">
+        <div
+          class="modal fade"
+          id="modalDoctorForm"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="myModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Add Doctor</h4>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form id="doctorForm" class="modal-body mx-3">
+                <div class="md-form mb-5">
+                  <label
+                    data-error="wrong"
+                    data-success="right"
+                    for="defaultForm-name"
+                    >Name</label
+                  >
+                  <i class="fas fa-envelope prefix grey-text"></i>
+                  <input
+                    type="name"
+                    name="name"
+                    id="name"
+                    class="form-control validate"
+                  />
+                </div>
 
-  <section style="padding: 1em 3em">
-    <div style="margin-bottom: 1em">
-      <div
-        class="modal fade"
-        id="modalDoctorForm"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header text-center">
-              <h4 class="modal-title w-100 font-weight-bold">Add Doctor</h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
+                <div class="md-form mb-5">
+                  <label
+                    data-error="wrong"
+                    data-success="right"
+                    for="defaultForm-name"
+                    >Email</label
+                  >
+                  <i class="fas fa-envelope prefix grey-text"></i>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    class="form-control validate"
+                  />
+                </div>
+
+                <div class="md-form mb-4">
+                  <i class="fas fa-lock prefix grey-text"></i>
+                  <label
+                    data-error="wrong"
+                    data-success="right"
+                    for="defaultForm-phone"
+                    >Password</label
+                  >
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-control validate"
+                  />
+                </div>
+
+                <div class="modal-footer d-flex justify-content-center">
+                  <button class="btn btn-default">Submit</button>
+                </div>
+                <p
+                  style="color: red; font-size: 15px; margin-top: 10px"
+                  id="error"
+                ></p>
+              </form>
             </div>
-            <form id="doctorForm" class="modal-body mx-3">
-              <div class="md-form mb-5">
-                <label
-                  data-error="wrong"
-                  data-success="right"
-                  for="defaultForm-name"
-                  >Name</label
-                >
-                <i class="fas fa-envelope prefix grey-text"></i>
-                <input
-                  type="name"
-                  name="name"
-                  id="name"
-                  class="form-control validate"
-                />
-              </div>
-
-              <div class="md-form mb-5">
-                <label
-                  data-error="wrong"
-                  data-success="right"
-                  for="defaultForm-name"
-                  >Email</label
-                >
-                <i class="fas fa-envelope prefix grey-text"></i>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  class="form-control validate"
-                />
-              </div>
-
-              <div class="md-form mb-4">
-                <i class="fas fa-lock prefix grey-text"></i>
-                <label
-                  data-error="wrong"
-                  data-success="right"
-                  for="defaultForm-phone"
-                  >Phone Number</label
-                >
-                <input
-                  type="mobile"
-                  id="mobile"
-                  name="mobile"
-                  class="form-control validate"
-                />
-              </div>
-
-              <div class="md-form mb-4">
-                <i class="fas fa-lock prefix grey-text"></i>
-                <label
-                  data-error="wrong"
-                  data-success="right"
-                  for="defaultForm-phone"
-                  >Designation</label
-                >
-                <input
-                  type="text"
-                  id="designation"
-                  name="designation"
-                  class="form-control validate"
-                />
-              </div>
-
-
-              <div class="modal-footer d-flex justify-content-center">
-                <button class="btn btn-default">Submit</button>
-              </div>
-              <p
-                style="color: red; font-size: 15px; margin-top: 10px"
-                id="error"
-              ></p>
-            </form>
           </div>
         </div>
       </div>
-      
-      <button
-        class="btn btn-primary"
-        data-toggle="modal"
-        data-target="#modalDoctorForm"
-        style="margin-left: 3em;"
-      >
-        Add Doctor
-      </button>
+    </section>
 
-
+    <button
+      class="btn btn-primary"
+      data-toggle="modal"
+      data-target="#modalDoctorForm"
+      style="margin-left: 3em"
+    >
+      Add Doctor
+    </button>
 
     <div class="row"></div>
     <section style="padding: 1em 3em">
@@ -203,11 +191,9 @@
         <thead style="color: white; background: #23395d">
           <tr>
             <th>ID</th>
+            <th>Email</th>
             <th>Name</th>
-            <th>Appointment ID</th>
-            <th>Appointment date</th>
-            <th>Doctor</th>
-            <th>Staff</th>
+            <th>Joined At</th>
             <th>Delete</th>
           </tr>
         </thead>
@@ -220,15 +206,32 @@
       </table>
       <!--Table-->
     </section>
-  </div>
-
-</div>
   </body>
 
-  <script>
+  <script type="module">
+    import {
+      getRole,
+      clearData,
+      getDoctorsAPI,
+      addNewStaffAPI,
+      removeStaffAPI
+    } from './api.js'
+
+    let doctors = []
+
+    if (getRole() != 'staff') {
+      window.location.href = '/404.html'
+    }
+
+    document
+      .getElementById('signout')
+      .addEventListener('click', function (event) {
+        clearData()
+      })
+
     document
       .getElementById('doctorForm')
-      .addEventListener('submit', function (event) {
+      .addEventListener('submit', async function (event) {
         event.preventDefault()
         const formData = new FormData(event.target)
         const formProps = Object.fromEntries(formData)
@@ -246,76 +249,129 @@
         } else {
           count++
         }
-        if (formProps.address.trim().length == 0) {
-          errors = errors + 'Length of address should not be zero. '
-        } else {
-          count++
-        }
-        if (formProps.designation.trim().length == 0) {
-          errors = errors + 'Length of reason should not be zero. '
+        if (formProps.password.length < 6) {
+          errors = errors + 'Length of password should be greater than 5. '
         } else {
           count++
         }
 
-        if (count < 4) {
+        formProps.role = 'doctor'
+
+        if (count < 3) {
           console.log(formProps)
           document.getElementById('error').innerHTML = errors
         } else {
           count = 0
           document.getElementById('error').innerHTML = ''
           console.log(formProps)
+          try {
+            var res = await addNewStaffAPI({
+              name: formProps.name,
+              email: formProps.email,
+              password: formProps.password,
+              role: formProps.role
+            })
+
+            console.log('request result arrived', res)
+          } catch (err) {
+            console.log(err)
+          }
+          if (res?.success) {
+            alert('doctor added')
+            $('#modalDoctorForm').modal('hide')
+            window.location.reload()
+          } else {
+            document.getElementById('error').innerHTML = res?.success
+              ? ''
+              : res?.error
+          }
         }
       })
-    
-    function t_record(obj) {
+
+    function t_record(obj, ind) {
       let record = `<tr class="table">
                       <th scope="row">${obj.id}</th>
+                      <td>${obj.email}</td>
                       <td>${obj.name}</td>
-                      <td>${obj.app_id}</td>
-                      <td>${obj.app_date}</td>
-                      <td>${obj.doc_id}</td>
-                      <td>${obj.staff_id}</td>
-                      <td><button class="btn btn-danger">Delete</button></td>
+                      <td>${obj.createdAt.substring(0, 10)}</td>
+                      <td><button class="btn btn-danger" onclick="DeleteDoctor(${ind})">Delete</button></td>
                   </tr>`
       return record
     }
 
-    let history = [
-      {
-        id: 1,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 2,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 3,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
+    function displayDoctors(doctors) {
+      var all = ''
+
+      for (let i in doctors) {
+        all = all + t_record(doctors[i], i)
       }
-    ]
-
-    var res = ''
-
-    for (let i of history) {
-      res = res + t_record(i)
-      // console.log(i)
-      // console.log(t_record(i))
+      document.getElementById('tb-content').innerHTML = all
     }
 
-    document.getElementById('tb-content').innerHTML = res
+    const getDoctors = async () => {
+      async function DeleteDoctor(ind) {
+        console.log('Deleted : ', doctors[ind])
+        try {
+          var res = await removeStaffAPI(doctors[ind].email)
+          console.log(res)
+          if (res.success) {
+            doctors.splice(ind, 1)
+            displayDoctors(doctors)
+          }
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      window.DeleteDoctor = DeleteDoctor
+      let res = await getDoctorsAPI()
+      if (res.success) {
+        doctors = res.doctors
+      }
+
+      displayDoctors(doctors)
+    }
+
+    // let history = [
+    //   {
+    //     id: 1,
+    //     name: 'king',
+    //     app_id: 345,
+    //     app_date: '08-02-2023',
+    //     doc_id: 678,
+    //     staff_id: 278
+    //   },
+    //   {
+    //     id: 2,
+    //     name: 'king',
+    //     app_id: 345,
+    //     app_date: '08-02-2023',
+    //     doc_id: 678,
+    //     staff_id: 278
+    //   },
+    //   {
+    //     id: 3,
+    //     name: 'king',
+    //     app_id: 345,
+    //     app_date: '08-02-2023',
+    //     doc_id: 678,
+    //     staff_id: 278
+    //   }
+    // ]
+
+    // var res = ''
+
+    // function DeleteDoctor(ind) {
+    //   console.log('Deleted : ', history[ind])
+    // }
+
+    // for (let i in history) {
+    //   res = res + t_record(history[i], i)
+    //   // console.log(i)
+    //   // console.log(t_record(i))
+    // }
+
+    // document.getElementById('tb-content').innerHTML = res
+    getDoctors()
   </script>
 
   <style>

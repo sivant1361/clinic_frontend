@@ -86,10 +86,25 @@
     </div>
   </body>
 
-  <script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <script type="module">
+    import {
+      loginAPI,
+      getToken,
+      getRole,
+      getProfileAPI,
+      setProfile,
+      setToken
+    } from './api.js'
+
+    if (getToken() != null) {
+      window.location.href = '/404.html'
+    }
+
     document
       .getElementById('loginForm')
-      .addEventListener('submit', function (event) {
+      .addEventListener('submit', async function (event) {
         event.preventDefault()
         const formData = new FormData(event.target)
         const formProps = Object.fromEntries(formData)
@@ -102,10 +117,10 @@
         } else {
           errors = errors + 'Not an email address. '
         }
-        if (/^\d{10}$/.test(formProps.mobile)) {
-          count++
+        if (formProps.password.length < 6) {
+          errors = errors + 'Length of password should be greater than 5. '
         } else {
-          errors = errors + 'Not a valid phone number. '
+          count++
         }
 
         if (count < 2) {
@@ -113,7 +128,35 @@
         } else {
           count = 0
           document.getElementById('error').innerHTML = ''
+          console.log('starting to make a login request')
           console.log(formProps)
+          try {
+            var res = await loginAPI({
+              email: formProps.email,
+              password: formProps.password
+            })
+            console.log('request result arrived', res)
+          } catch (err) {
+            console.log(err)
+          }
+          if (res?.success) {
+            setProfile(res.user)
+            setToken(res.token)
+            const role = getRole()
+            if (role === 'doctor') {
+              window.location.href = '/doctor_profile.html'
+            }
+            if (role === 'staff') {
+              window.location.href = '/staff_profile.html'
+            }
+            if (role === 'user') {
+              window.location.href = '/patient_profile.html'
+            }
+          } else {
+            document.getElementById('error').innerHTML = res?.success
+              ? ''
+              : res?.error
+          }
         }
       })
   </script>

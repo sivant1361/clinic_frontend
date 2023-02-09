@@ -90,10 +90,16 @@
       </div>
     </div>
   </body>
-  <script>
+  <script type="module">
+    import { registerAPI, loginAPI, getToken } from './api.js'
+
+    if (getToken() != null) {
+      window.location.href = '/404.html'
+    }
+
     document
       .getElementById('registerForm')
-      .addEventListener('submit', function (event) {
+      .addEventListener('submit', async function (event) {
         event.preventDefault()
         const formData = new FormData(event.target)
         const formProps = Object.fromEntries(formData)
@@ -119,10 +125,36 @@
 
         if (count < 3) {
           document.getElementById('error').innerHTML = errors
+          localStorage.setItem(
+            'global',
+            JSON.stringify({
+              email: 's@gmail.com',
+              token: '213456',
+              role: 'doctor'
+            })
+          )
         } else {
           count = 0
           document.getElementById('error').innerHTML = ''
-          console.log(formProps)
+          console.log('starting to make a request')
+          try {
+            var res = await registerAPI({
+              name: formProps.name,
+              email: formProps.email,
+              password: formProps.password
+            })
+
+            console.log('request result arrived', res)
+          } catch (err) {
+            console.log(err)
+          }
+          if (res?.success) {
+            window.location.href = '/login.html'
+          } else {
+            document.getElementById('error').innerHTML = res?.success
+              ? ''
+              : res?.error
+          }
         }
       })
   </script>

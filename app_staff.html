@@ -51,6 +51,12 @@
           <a class="nav-item nav-link" style="color: #fff" href="/history.html"
             >HISTORY</a
           >
+          <a
+          class="nav-item nav-link"
+          style="color: #e0f7fa; padding-right: 1em"
+          onclick="clearData()"
+          >SIGN OUT</a
+        >
         </div>
       </div>
     </nav>
@@ -123,7 +129,13 @@
     </section>
   </body>
 
-  <script>
+  <script type = "module">
+
+    import {getRole, clearData} from "./api.js"
+    if (getRole() != "staff") {
+      window.location.href = '/404.html'
+    }
+
     function t_record(obj) {
       let record = `<tr class="table">
                       <th scope="row">${obj.id}</th>

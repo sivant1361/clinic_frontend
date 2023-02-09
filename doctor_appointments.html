@@ -57,10 +57,68 @@
             href="/doctor_appointments.html"
             >APPOINTMENTS</a
           >
+          <a
+            class="nav-item nav-link"
+            style="color: #e0f7fa; padding-right: 1em"
+            id="signout"
+            >SIGN OUT</a
+          >
         </div>
       </div>
     </nav>
     <section style="padding: 1em 3em">
+      <div style="margin-bottom: 1em">
+        <div
+          class="modal fade"
+          id="modalAppointmentForm"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="myModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Appointment</h4>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form id="applicationForm" class="modal-body mx-3">
+                <div class="md-form mb-4">
+                  <i class="fas fa-lock prefix grey-text"></i>
+                  <label
+                    data-error="wrong"
+                    data-success="right"
+                    for="defaultForm-reason"
+                    >Prescription</label
+                  ><br />
+                  <textarea
+                    id="prescription"
+                    name="prescription"
+                    style="width: 100%"
+                    value=""
+                  >
+                  </textarea>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                  <button class="btn btn-default">Submit</button>
+                </div>
+                <p
+                  style="color: red; font-size: 15px; margin-top: 10px"
+                  id="error"
+                ></p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!--Table-->
       <table
         class="table table-striped w-auto table-hover"
@@ -69,13 +127,13 @@
         <!--Table head-->
         <thead style="color: white; background: #23395d">
           <tr>
-            <th>ID</th>
-            <th>Name</th>
             <th>Appointment ID</th>
+            <th>Patient</th>
             <th>Appointment date</th>
-            <th>Doctor</th>
-            <th>Staff</th>
-            <th>Delete</th>
+            <th>Time</th>
+            <th>Reason</th>
+            <th>Prescription</th>
+            <th>Edit</th>
           </tr>
         </thead>
         <!--Table head-->
@@ -89,56 +147,105 @@
     </section>
   </body>
 
-  <script>
-    function t_record(obj) {
+  <script type="module">
+    import {
+      getRole,
+      clearData,
+      viewAppointmentsAPI,
+      modifyAppointmentAPI
+    } from './api.js'
+
+    var editobj = null
+
+    if (getRole() != 'doctor') {
+      window.location.href = '/404.html'
+    }
+    document
+      .getElementById('signout')
+      .addEventListener('click', function (event) {
+        clearData()
+      })
+
+    document
+      .getElementById('modalAppointmentForm')
+      .addEventListener('submit', async function (event) {
+        event.preventDefault()
+        const formData = new FormData(event.target)
+        const formProps = Object.fromEntries(formData)
+        var count = 0
+        var errors = ''
+
+        if (formProps.prescription.trim().length == 0) {
+          errors = errors + 'Length of prescription should not be zero. '
+        } else {
+          count++
+        }
+
+        if (count < 1) {
+          console.log(formProps)
+          document.getElementById('error').innerHTML = errors
+        } else {
+          count = 0
+          document.getElementById('error').innerHTML = ''
+          console.log('starting to make a request')
+          try {
+            var res = await modifyAppointmentAPI(
+              editobj.id,
+              formProps.prescription
+            )
+            console.log('request result arrived', res)
+          } catch (err) {
+            console.log(err)
+          }
+          if (res?.success) {
+            $('#modalAppointmentForm').modal('hide')
+            window.location.reload()
+          } else {
+            document.getElementById('error').innerHTML = res?.success
+              ? ''
+              : res?.error
+          }
+        }
+      })
+
+    function t_record(obj, ind) {
       let record = `<tr class="table">
                       <th scope="row">${obj.id}</th>
-                      <td>${obj.name}</td>
-                      <td>${obj.app_id}</td>
-                      <td>${obj.app_date}</td>
-                      <td>${obj.doc_id}</td>
-                      <td>${obj.staff_id}</td>
-                      <td><button class="btn btn-danger">Delete</button></td>
+                      <td>${obj.patient ? obj.patient : ''}</td>
+                      <td>${obj.date ? obj.date : ''}</td>
+                      <td>${obj.time ? obj.time : ''}</td>
+                      <td>${obj.notes ? obj.notes : ''}</td>
+                      <td>${obj.prescription ? obj.prescription : ''}</td>
+                      <td><button class="btn btn-primary" data-toggle="modal"
+          data-target="#modalAppointmentForm" onclick="EditHandler(${ind})">Edit</button></td>
                   </tr>`
       return record
     }
 
-    let history = [
-      {
-        id: 1,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 2,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
-      },
-      {
-        id: 3,
-        name: 'king',
-        app_id: 345,
-        app_date: '08-02-2023',
-        doc_id: 678,
-        staff_id: 278
+    const getHistory = async () => {
+      function EditHandler(ind) {
+        editobj = history[ind]
+        console.log('Details : ', history[ind])
+        document.getElementById('prescription').value =
+          history[ind].prescription
       }
-    ]
+      window.EditHandler = EditHandler
 
-    var res = ''
+      let res = await viewAppointmentsAPI()
+      var history = []
+      console.log(res)
+      if (res.success) {
+        history = res.appointments
+      }
+      var out = ''
 
-    for (let i of history) {
-      res = res + t_record(i)
-      // console.log(i)
-      // console.log(t_record(i))
+      for (let i in history) {
+        out = out + t_record(history[i], i)
+      }
+
+      document.getElementById('tb-content').innerHTML = out
     }
-
-    document.getElementById('tb-content').innerHTML = res
+    getHistory()
   </script>
 
   <style>
