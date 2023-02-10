@@ -1,4 +1,4 @@
-const serverUrl = 'https://6db6-117-207-140-43.in.ngrok.io'
+const serverUrl = 'https://ebe9-2409-40d4-24-2eb6-5974-f284-591a-eef1.in.ngrok.io'
 
 const runAPI = async (url, body) => {
   const apiUrl = new URL(`${serverUrl}${url}`)
